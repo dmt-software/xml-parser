@@ -32,7 +32,9 @@ class Parser
 
     public function parseXml(): string
     {
-        $elements[$this->current->depth()] = $this->current ?? $this->parse();
+        $depth = $this->current ? $this->current->depth() : 1;
+        $elements = [$depth => $this->current ?? $this->parse()];
+
         /** @var ElementNode $node */
         while ($node = $this->iterator->current()) {
             if (array_key_exists($node->depth() - 1, $elements)) {
