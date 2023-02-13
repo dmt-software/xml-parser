@@ -16,9 +16,6 @@ final class StringParser implements Parser
 
     public function __construct(string $source, int $length = 1024)
     {
-        if (substr($source, 0, 1) !== '<') {
-            throw new InvalidArgumentException('String is not XML');
-        }
         $this->source = $source;
         $this->length = $length;
     }
