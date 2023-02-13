@@ -32,7 +32,7 @@ final class StreamParser implements Parser
      */
     public function parse(): iterable
     {
-        while (($chunk = @fread($this->stream, $this->length)) !== false) {
+        while ($chunk = @fread($this->stream, $this->length)) {
             yield from str_split($chunk);
         }
 

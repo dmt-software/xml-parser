@@ -14,9 +14,6 @@ final class StringParser implements Parser
     private string $source;
     private int $length = 1024;
 
-    /**
-     * @param string $source
-     */
     public function __construct(string $source, int $length = 1024)
     {
         if (substr($source, 0, 1) !== '<') {
