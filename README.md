@@ -1,5 +1,11 @@
 # XML Parser
 
+## Install
+
+```bash
+composer require dmt-software/xml-parser
+```
+
 ## Usage
 
 Iterate over all the elements within the xml.
