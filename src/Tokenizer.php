@@ -40,6 +40,11 @@ class Tokenizer
         xml_set_character_data_handler($this->handle, 'contents');
     }
 
+    public function namespaces(): XmlNamespaces
+    {
+        return $this->namespaces;
+    }
+
     public function tokenize(): Generator
     {
         foreach ($this->parser->parse() as $data) {

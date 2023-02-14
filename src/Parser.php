@@ -2,26 +2,28 @@
 
 namespace DMT\XmlParser;
 
+use DMT\XmlParser\Node\Element;
 use DMT\XmlParser\Node\ElementNode;
-use DMT\XmlParser\Node\Node;
+use DMT\XmlParser\Node\XmlNamespace;
+use DMT\XmlParser\Node\XmlNamespaces;
 use Generator;
 
 class Parser
 {
     private ?ElementNode $current = null;
-    private ?Generator $iterator = null;
+    private Generator $iterator;
+    private XmlNamespaces $namespaces;
 
     /**
      * @param \DMT\XmlParser\Tokenizer $tokenizer
      */
     public function __construct(Tokenizer $tokenizer)
     {
-        if (!$this->iterator) {
-            $this->iterator = $tokenizer->tokenize();
-        }
+        $this->iterator = $tokenizer->tokenize();
+        $this->namespaces = $tokenizer->namespaces();
     }
 
-    public function parse(): ?Node
+    public function parse(): ?ElementNode
     {
         try {
             return $this->current = $this->iterator->current();
@@ -47,6 +49,27 @@ class Parser
             $this->iterator->next();
         }
 
+        if ($this->namespaces->count() > 0 && $this->current instanceof Element) {
+            $this->applyParentNamespaces($this->current);
+        }
+
         return strval($this->current);
+    }
+
+    private function applyParentNamespaces(Element $element): void
+    {
+        $prefixes = [];
+        foreach ($element->namespaces() As $namespace) {
+            $prefixes[] = $namespace->prefix;
+        }
+
+        $namespaces = array_filter(
+            $this->namespaces->getArrayCopy(),
+            fn (XmlNamespace $namespace) => !in_array($namespace->prefix, $prefixes)
+        );
+
+        foreach ($namespaces as $namespace) {
+            $element->addAttribute($namespace);
+        }
     }
 }
