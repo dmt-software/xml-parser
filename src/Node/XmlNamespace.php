@@ -16,9 +16,13 @@ class XmlNamespace implements Node, AttributeNode
 
     public function prefixNodeName(Node $node): void
     {
-        if (!property_exists($node, 'name') || !strpos($node->name, ':')) {
+        if (!property_exists($node, 'name')
+            || !strpos($node->name, ':')
+            || ($node->namespace ?? null) !== $this->uri
+        ) {
             return;
         }
+
         $node->name = ltrim(str_replace($this->uri, $this->prefix, $node->name), ':');
         $node->prefix = $this->prefix;
     }

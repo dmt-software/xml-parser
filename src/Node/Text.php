@@ -8,10 +8,10 @@ class Text implements Node, ElementNode
     public bool $encode;
     public int $depth = 0;
 
-    public function __construct(string $contents, bool $forceCdata = true)
+    public function __construct(string $contents, bool $forceCDATA = false)
     {
         $this->contents = trim($contents);
-        $this->encode = !$forceCdata;
+        $this->encode = !$forceCDATA;
     }
 
     public function depth(): int

@@ -10,12 +10,12 @@ class Element implements Node, ElementNode
     public string $prefix = '';
     public int $depth = 0;
 
-    /** @var \DMT\XmlParser\Node\ElementNode[]  */
+    /** @var ElementNode[] */
     private array $childNodes = [];
-    /** @var \DMT\XmlParser\Node\AttributeNode[]  */
+    /** @var AttributeNode[] */
     private array $attributes = [];
 
-    public function __construct(string $name, array $attributes)
+    public function __construct(string $name, array $attributes = [])
     {
         $this->name = $name;
         $this->localName = $name;
