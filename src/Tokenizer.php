@@ -22,7 +22,7 @@ class Tokenizer
     /** @var resource */
     private $handle;
     private int $depth = 0;
-    private ?Text $textNode = null;
+    private array $textNodes = [];
     private ?Element $current = null;
 
     public function __construct(Parser $parser, string $encoding = null, int $flags = 0)
@@ -49,7 +49,7 @@ class Tokenizer
     {
         foreach ($this->parser->parse() as $data) {
             $this->current = null;
-            $this->textNode = null;
+            $this->textNodes = [];
 
             if (!xml_parse($this->handle, $data, '' === $data)) {
                 break;
@@ -60,9 +60,10 @@ class Tokenizer
                 yield $this->current;
             }
 
-            if ($this->textNode) {
-                $this->textNode->depth = $this->depth + 1;
-                yield $this->textNode;
+            if ($this->textNodes) {
+                array_map(fn(Text $textNode) => $textNode->depth = $this->depth + 1, $this->textNodes);
+
+                yield from $this->textNodes;
             }
         }
     }
@@ -103,7 +104,7 @@ class Tokenizer
     private function contents($parser, string $text)
     {
         if (trim($text)) {
-            $this->textNode = new Text($text, ($this->flags & self::XML_USE_CDATA));
+            $this->textNodes[] = new Text($text, ($this->flags & self::XML_USE_CDATA));
         }
     }
 
