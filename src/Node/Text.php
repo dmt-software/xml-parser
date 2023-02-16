@@ -29,6 +29,6 @@ class Text implements Node, ElementNode
             return $this->contents;
         }
 
-        return htmlentities($this->contents, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
+       return htmlentities($this->contents, ENT_XML1 | ENT_SUBSTITUTE, 'UTF-8', false);
     }
 }

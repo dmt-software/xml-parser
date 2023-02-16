@@ -27,6 +27,6 @@ class Attribute implements Node, AttributeNode
     {
         $name = ($this->prefix ? $this->prefix . ':' : '') . $this->localName;
 
-        return sprintf('%s="%s"', $name, $this->value);
+        return sprintf('%s="%s"', $name, htmlentities($this->value, ENT_XML1 | ENT_SUBSTITUTE, 'UTF-8', false));
     }
 }
