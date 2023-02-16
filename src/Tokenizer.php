@@ -56,7 +56,6 @@ class Tokenizer
             }
 
             if ($this->current) {
-                $this->current->depth = $this->depth;
                 yield $this->current;
             }
 
@@ -98,7 +97,7 @@ class Tokenizer
         }
 
         $this->current = $node;
-        $this->depth++;
+        $this->current->depth = ++$this->depth;
     }
 
     private function contents($parser, string $text)
