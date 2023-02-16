@@ -25,10 +25,6 @@ class Text implements Node, ElementNode
             return "<![CDATA[$this->contents]]>";
         }
 
-        if (!preg_match('~[\<\>]~', $this->contents)) {
-            return $this->contents;
-        }
-
        return htmlentities($this->contents, ENT_XML1 | ENT_SUBSTITUTE, 'UTF-8', false);
     }
 }
