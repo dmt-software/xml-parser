@@ -41,6 +41,12 @@ class AttributeTest extends TestCase
                 'foo',
                 'ns1:foo="bar"'
             ],
+            'attribute with quote' => [
+                new Attribute('foo', 'bar"'),
+                '',
+                'foo',
+                'foo="bar&quot;"'
+            ],
         ];
     }
 }
