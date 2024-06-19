@@ -2,10 +2,10 @@
 
 namespace DMT\Test\XmlParser\Source;
 
-use DMT\XmlParser\Source\GzipStreamParser;
+use DMT\XmlParser\Source\GzipStringParser;
 use PHPUnit\Framework\TestCase;
 
-class GzipStreamParserTest extends TestCase
+class GzipStringParserTest extends TestCase
 {
     public function testParse(): void
     {
@@ -15,7 +15,7 @@ class GzipStreamParserTest extends TestCase
         fwrite($handle, zlib_encode($books, ZLIB_ENCODING_GZIP));
         rewind($handle);
 
-        $parser = new GzipStreamParser($handle);
+        $parser = new GzipStringParser(stream_get_contents($handle));
         $contents = '';
         foreach ($parser->parse() as $char) {
             $contents .= $char;
