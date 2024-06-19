@@ -10,7 +10,9 @@
     }
   ],
   "require": {
-    "php": ">=7.4"
+    "php": ">=7.4",
+    "ext-xml": "*",
+    "ext-zlib": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.6"
