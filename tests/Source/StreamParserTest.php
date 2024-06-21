@@ -42,4 +42,25 @@ class StreamParserTest extends TestCase
 
         fclose($handle);
     }
+
+    public function testParseWithStreamFilter(): void
+    {
+        $books = file_get_contents(__DIR__ . '/../fixtures/books.xml');
+        $handle = fopen('php://memory', 'w+');
+
+        fwrite($handle, zlib_encode($books, ZLIB_ENCODING_GZIP));
+        rewind($handle);
+
+        $parser = new StreamParser($handle, 2048);
+        stream_filter_append($parser->getStream(), 'zlib.inflate', STREAM_FILTER_READ, ['window' => 31]);
+
+        $contents = '';
+        foreach ($parser->parse() as $char) {
+            $contents .= $char;
+            $this->assertSame(1, strlen($char));
+        }
+        fclose($handle);
+
+        $this->assertSame($books, $contents);
+    }
 }
