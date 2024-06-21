@@ -7,17 +7,19 @@ use InvalidArgumentException;
 /**
  * class StringParser
  *
- * Parses an xml string into single characters.
+ * Parses a string into single characters.
  */
 final class StringParser implements Parser
 {
-    private string $source;
-    private int $length = 1024;
+    private Parser $parser;
 
     public function __construct(string $source, int $length = 1024)
     {
-        $this->source = $source;
-        $this->length = $length;
+        if (($stream = @fopen('data://text/plain,' . $source, 'r')) === false) {
+            throw new InvalidArgumentException('Could not read string');
+        }
+
+        $this->parser = new StreamParser($stream, $length);
     }
 
     /**
@@ -25,10 +27,14 @@ final class StringParser implements Parser
      */
     public function parse(): iterable
     {
-        $chunks = str_split($this->source, $this->length);
+        yield from $this->parser->parse();
+    }
 
-        foreach ($chunks as $chunk) {
-            yield from str_split($chunk);
-        }
+    /**
+     * @inheritDoc
+     */
+    public function getStream()
+    {
+        return $this->parser->getStream();
     }
 }

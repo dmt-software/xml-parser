@@ -11,4 +11,11 @@ interface Parser
      * @throws \RuntimeException
      */
     public function parse(): iterable;
+
+    /**
+     * Get the inner stream.
+     *
+     * @return resource
+     */
+    public function getStream();
 }

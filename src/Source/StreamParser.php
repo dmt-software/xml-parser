@@ -40,4 +40,12 @@ final class StreamParser implements Parser
             throw new \RuntimeException('Could not read from source');
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getStream()
+    {
+        return $this->stream;
+    }
 }

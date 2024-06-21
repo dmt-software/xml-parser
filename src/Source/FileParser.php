@@ -28,4 +28,12 @@ final class FileParser implements Parser
     {
         yield from $this->parser->parse();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getStream()
+    {
+        return $this->parser->getStream();
+    }
 }
