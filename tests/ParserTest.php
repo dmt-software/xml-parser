@@ -8,13 +8,14 @@ use DMT\XmlParser\Parser;
 use DMT\XmlParser\Source\FileParser;
 use DMT\XmlParser\Source\StringParser;
 use DMT\XmlParser\Tokenizer;
+use DMT\XmlParser\Tokenizer\XmlParserTokenizer;
 use PHPUnit\Framework\TestCase;
 
 class ParserTest extends TestCase
 {
     public function testParse(): void
     {
-        $parser = new Parser(new Tokenizer(new StringParser('<book><title>A title</title><author/></book>')));
+        $parser = new Parser(new XmlParserTokenizer(new StringParser('<book><title>A title</title><author/></book>')));
 
         $elements = [];
         while ($element = $parser->parse()) {
@@ -27,7 +28,7 @@ class ParserTest extends TestCase
 
     public function testParseXml()
     {
-        $parser = new Parser(new Tokenizer(new FileParser(__DIR__ . '/fixtures/books.xml')));
+        $parser = new Parser(new XmlParserTokenizer(new FileParser(__DIR__ . '/fixtures/books.xml')));
 
         $books = [];
         while ($element = $parser->parse()) {
@@ -48,7 +49,7 @@ class ParserTest extends TestCase
             </ns1:book>
         </books>';
 
-        $parser = new Parser(new Tokenizer(new StringParser($xml)));
+        $parser = new Parser(new XmlParserTokenizer(new StringParser($xml)));
 
         while ($element = $parser->parse()) {
             if ($element->localName === 'book') {
@@ -67,7 +68,7 @@ class ParserTest extends TestCase
             <ns1:author/>
         </book>';
 
-        $xml = (new Parser(new Tokenizer(new StringParser($xml), null, Tokenizer::XML_DROP_NAMESPACES)))->parseXml();
+        $xml = (new Parser(new XmlParserTokenizer(new StringParser($xml), null, Tokenizer::XML_DROP_NAMESPACES)))->parseXml();
 
         $this->assertStringNotContainsString('ns1', $xml);
         $this->assertStringNotContainsString('xmlns', $xml);
@@ -77,7 +78,7 @@ class ParserTest extends TestCase
     {
         $xml = '<book><title>A title</title><author/></book>';
 
-        $parser = new Parser(new Tokenizer(new StringParser($xml), null, Tokenizer::XML_USE_CDATA));
+        $parser = new Parser(new XmlParserTokenizer(new StringParser($xml), null, Tokenizer::XML_USE_CDATA));
         do {
             $element = $parser->parse();
         } while (!$element instanceof Text);

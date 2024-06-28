@@ -44,8 +44,8 @@ final class StreamParser implements Parser
     /**
      * @inheritDoc
      */
-    public function getStream()
+    public function getMetadata(): array
     {
-        return $this->stream;
+        return stream_get_meta_data($this->stream);
     }
 }
