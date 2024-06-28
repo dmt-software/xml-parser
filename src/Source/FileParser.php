@@ -32,8 +32,8 @@ final class FileParser implements Parser
     /**
      * @inheritDoc
      */
-    public function getStream()
+    public function getMetadata(): array
     {
-        return $this->parser->getStream();
+        return $this->parser->getMetadata();
     }
 }

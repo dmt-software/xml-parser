@@ -13,9 +13,9 @@ interface Parser
     public function parse(): iterable;
 
     /**
-     * Get the inner stream.
+     * Get the metadata for the inner stream.
      *
-     * @return resource
+     * @return array
      */
-    public function getStream();
+    public function getMetadata(): array;
 }
