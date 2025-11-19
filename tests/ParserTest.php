@@ -9,6 +9,7 @@ use DMT\XmlParser\Source\FileParser;
 use DMT\XmlParser\Source\StringParser;
 use DMT\XmlParser\Tokenizer;
 use DMT\XmlParser\Tokenizer\XmlParserTokenizer;
+use DMT\XmlParser\Tokenizer\XmlReaderTokenizer;
 use PHPUnit\Framework\TestCase;
 
 class ParserTest extends TestCase
@@ -61,7 +62,28 @@ class ParserTest extends TestCase
         $this->assertStringContainsString('xmlns:x="alt-lang"', $book);
     }
 
-    public function testDropNamespaces()
+    public function testReadXmlWithInheritNamespaces()
+    {
+        $xml = '<books xmlns:ns1="urn:ns-uri" xmlns:x="lang">
+            <ns1:book xmlns:x="alt-lang">
+                <ns1:title x:lang="en_US">A title</ns1:title>
+                <author/>
+            </ns1:book>
+        </books>';
+
+        $parser = new Parser(new XmlReaderTokenizer(new StringParser($xml)));
+
+        while ($element = $parser->parse()) {
+            if ($element->localName === 'book') {
+                $book = $parser->parseXml();
+            }
+        }
+
+        $this->assertStringContainsString('xmlns:ns1="urn:ns-uri"', $book);
+        $this->assertStringContainsString('xmlns:x="alt-lang"', $book);
+    }
+
+    public function testParseXmlWithoutNamespaces()
     {
         $xml = '<book xmlns="http://example.org/ns" xmlns:ns1="http://example.org/ns">
             <ns1:title>A title</ns1:title>
@@ -74,7 +96,20 @@ class ParserTest extends TestCase
         $this->assertStringNotContainsString('xmlns', $xml);
     }
 
-    public function testUseCData()
+    public function testReadXmlWithoutNamespaces()
+    {
+        $xml = '<book xmlns="http://example.org/ns" xmlns:ns1="http://example.org/ns">
+            <ns1:title>A title</ns1:title>
+            <ns1:author/>
+        </book>';
+
+        $xml = (new Parser(new XmlReaderTokenizer(new StringParser($xml), null, Tokenizer::XML_DROP_NAMESPACES)))->parseXml();
+
+        $this->assertStringNotContainsString('ns1', $xml);
+        $this->assertStringNotContainsString('xmlns', $xml);
+    }
+
+    public function testParseXmlWithCData()
     {
         $xml = '<book><title>A title</title><author/></book>';
 
@@ -83,6 +118,18 @@ class ParserTest extends TestCase
             $element = $parser->parse();
         } while (!$element instanceof Text);
 
-        $this->assertMatchesRegularExpression('~\<\!\[CDATA\[.*\]\]\>~', strval($element));
+        $this->assertMatchesRegularExpression('~<!\[CDATA\[.*]]>~', strval($element));
+    }
+
+    public function testPReadXmlWithCData()
+    {
+        $xml = '<book><title>A title</title><author/></book>';
+
+        $parser = new Parser(new XmlReaderTokenizer(new StringParser($xml), null, Tokenizer::XML_USE_CDATA));
+        do {
+            $element = $parser->parse();
+        } while (!$element instanceof Text);
+
+        $this->assertMatchesRegularExpression('~<!\[CDATA\[.*]]>~', strval($element));
     }
 }
