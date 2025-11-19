@@ -50,6 +50,10 @@ class XmlReaderTokenizer implements Tokenizer
                 $element->depth = ++$this->depth;
                 $this->renderAttributes($element);
 
+                if ($this->reader->isEmptyElement) {
+                    $this->depth--;
+                }
+
                 yield $element;
             } elseif ($this->reader->nodeType === XMLReader::TEXT) {
                 $text = new Text($this->reader->value, ($this->flags & self::XML_USE_CDATA));
