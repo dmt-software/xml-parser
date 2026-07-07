@@ -32,10 +32,9 @@ class XmlParserTokenizer implements Tokenizer
         $this->handle = xml_parser_create_ns($encoding ?? 'UTF-8');
         xml_parser_set_option($this->handle, XML_OPTION_CASE_FOLDING, 0);
         xml_parser_set_option($this->handle, XML_OPTION_SKIP_WHITE, 1);
-        xml_set_object($this->handle, $this);
-        xml_set_start_namespace_decl_handler($this->handle, 'namespace');
-        xml_set_element_handler($this->handle, 'open', 'close');
-        xml_set_character_data_handler($this->handle, 'contents');
+        xml_set_start_namespace_decl_handler($this->handle, [$this, 'namespace']);
+        xml_set_element_handler($this->handle, [$this, 'open'], [$this, 'close']);
+        xml_set_character_data_handler($this->handle, [$this, 'contents']);
     }
 
     public function namespaces(): XmlNamespaces
