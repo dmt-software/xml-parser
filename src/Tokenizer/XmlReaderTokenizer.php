@@ -22,7 +22,7 @@ class XmlReaderTokenizer implements Tokenizer
     private int $depth = 0;
     private XMLReader $reader;
 
-    public function __construct(Parser $parser, string $encoding = null, int $flags = 0)
+    public function __construct(Parser $parser, ?string $encoding = null, int $flags = 0)
     {
         $this->parser = $parser;
         $this->flags = $flags;

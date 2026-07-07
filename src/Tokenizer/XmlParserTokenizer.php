@@ -23,7 +23,7 @@ class XmlParserTokenizer implements Tokenizer
     private array $textNodes = [];
     private ?Element $current = null;
 
-    public function __construct(Parser $parser, string $encoding = null, int $flags = 0)
+    public function __construct(Parser $parser, ?string $encoding = null, int $flags = 0)
     {
         $this->parser = $parser;
         $this->flags = $flags;
