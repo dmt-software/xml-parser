@@ -70,17 +70,17 @@ class XmlReaderTokenizer implements Tokenizer
 
     private function renderAttributes(Element $element): void
     {
-        while ($this->reader->moveToNextAttribute()) {
-            if (($this->flags & self::XML_DROP_NAMESPACES) && strpos($this->reader->name, 'xmlns') === 0) {
+        $applyNamespaces = !($this->flags & self::XML_DROP_NAMESPACES);
+
+        $a = 0;
+        while ($this->reader->moveToAttributeNo($a++)) {
+            if (!$applyNamespaces && strpos($this->reader->name, 'xmlns') === 0) {
                 continue;
             }
 
-            if (!($this->flags & self::XML_DROP_NAMESPACES)) {
-                if ($this->reader->name === 'xmlns') {
-                    $this->namespaces->append(new XmlNamespace($this->reader->value, ''));
-                } elseif (strpos($this->reader->name, 'xmlns:') === 0) {
-                    $this->namespaces->append(new XmlNamespace($this->reader->value, substr($this->reader->name, 6)));
-                }
+            if ($applyNamespaces && strpos($this->reader->name, 'xmlns') === 0) {
+                $prefix = $this->reader->name == 'xmlns' ? '' : substr($this->reader->name, 6);
+                $this->namespaces->append(new XmlNamespace($this->reader->value, $prefix));
             }
 
             $element->addAttribute(new Attribute($this->reader->name, $this->reader->value));
